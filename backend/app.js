@@ -9,8 +9,10 @@ const http = require('http');
 const { fetchSensorData } = require('./database');
 
 const app = express();
+
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+// Pass the HTTP server to WebSocket
+const wss = new WebSocket.Server({server});
 
 // Middleware for servin static files like index.html
 app.use(bodyParser.json());
@@ -30,6 +32,7 @@ app.use('/api/data', dataRoutes);
 // WebSocket connection handler
 wss.on('connection', (ws) => {
     console.log('WebSocket client connected.');
+    console.log(`WebSocket server listening on ws://localhost:${PORT}`);
 
     ws.on('close', () => {
         console.log('WebSocket client disconnected.');

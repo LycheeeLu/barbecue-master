@@ -1,5 +1,5 @@
 //'ws://your-websocket-server-url';
-const WEBSOCKET_URL = 'ws:http://localhost:3000/';
+const WEBSOCKET_URL = 'ws://localhost:3000';
 
 // Fetch the sensor data from the backend API
 //where the raw ugly data is 
@@ -87,6 +87,11 @@ const updateChartsWithFetchedData = (data) => {
 
 
 const socket = new WebSocket(WEBSOCKET_URL);
+
+socket.onopen = () => {
+    console.log('WebSocket connection established');
+};
+
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
