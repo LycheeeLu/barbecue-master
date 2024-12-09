@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Temperature Monitoring Dashboard</h1>
+        <div class="sensor-grid">
+            <div class="sensor-card">
+                <h2>Outside Temperature</h2>
+                <p id="outside-temp" class="temperature">--°C</p>
+                <canvas id="outside-chart" class="temp-chart"></canvas>
+            </div>
+            <div class="sensor-card">
+                <h2>Inside Temperature</h2>
+                <p id="inside-temp" class="temperature">--°C</p>
+                <canvas id="inside-chart" class="temp-chart"></canvas>
+            </div>
+        </div>
+        <div class="history-chart">
+            <h2>Temperature History (Last 24 Hours)</h2>
+            <canvas id="history-chart" class="temp-chart"></canvas> <!-- New canvas for history graph -->
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
