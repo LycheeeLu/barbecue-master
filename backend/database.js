@@ -1,4 +1,4 @@
-const { Pool } = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 
@@ -20,14 +20,14 @@ const db = new sqlite3.Database(path.resolve(__dirname, 'iot_barbecue.db'), (err
 
 //add sensor temperature and other data into database
 const insertSensorData = (data) => {
-    const { temperature, humidity, sensorLocation, timestamp } = data;
+    const { temperature, sensorLocation, timestamp } = data;
     return new Promise((resolve, reject) => {
         db.run(
             `
-            INSERT INTO SensorData (temperature, humidity, sensorLocation, timestamp)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO SensorData (temperature, sensorLocation, timestamp)
+            VALUES (?, ?, ?)
             `,
-            [temperature, humidity, sensorLocation, timestamp],
+            [temperature, sensorLocation, timestamp],
             function (err) {
                 if (err) {
                     return reject(err);
