@@ -1,6 +1,3 @@
-//'ws://your-websocket-server-url';
-const WEBSOCKET_URL = 'ws://localhost:3000';
-
 // Fetch the sensor data from the backend API
 //where the raw ugly data is 
 const fetchSensorData = async () => {
@@ -19,6 +16,7 @@ const displaySensorData = (data) => {
     // Example: Displaying the fetched sensor data on the page (can be updated as needed)
     console.log('Fetched Sensor Data:', data);
 };
+
 
 
 // Chart configuration for 24-hour monitoring
@@ -86,6 +84,8 @@ const updateChartsWithFetchedData = (data) => {
 };
 
 
+// WebSocket Connection to Port 1866
+const WEBSOCKET_URL = 'ws://localhost:1866';
 const socket = new WebSocket(WEBSOCKET_URL);
 
 socket.onopen = () => {

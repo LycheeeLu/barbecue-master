@@ -9,10 +9,9 @@ const http = require('http');
 const { fetchSensorData } = require('./database');
 
 const app = express();
+const wsServer = new WebSocket.Server({ port: 1866 });
 
-const server = http.createServer(app);
-// Pass the HTTP server to WebSocket
-const wss = new WebSocket.Server({server});
+
 
 // Middleware for servin static files like index.html
 app.use(bodyParser.json());
@@ -30,14 +29,16 @@ app.use('/api/data', dataRoutes);
 
 
 // WebSocket connection handler
-wss.on('connection', (ws) => {
-    console.log('WebSocket client connected.');
-    console.log(`WebSocket server listening on ws://localhost:${PORT}`);
+wsServer.on('connection', (socket) => {
+    console.log('WebSocket client connected');
+    socket.send(JSON.stringify({ message: 'Hello from WebSocket server' }));
 
-    ws.on('close', () => {
-        console.log('WebSocket client disconnected.');
+    socket.on('message', (data) => {
+        console.log('Received:', data);
     });
 });
+
+console.log('WebSocket server running on port 1866');
 
 // Broadcast function to send updates to all WebSocket clients
 function broadcastUpdate(data) {
