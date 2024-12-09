@@ -1,4 +1,6 @@
-const WEBSOCKET_URL = 'ws://your-websocket-server-url';
+//'ws://your-websocket-server-url';
+const WEBSOCKET_URL = 'ws://localhost:3000';
+
 
 // Chart configuration for 24-hour monitoring
 function createTemperatureChart(canvasId, label) {
