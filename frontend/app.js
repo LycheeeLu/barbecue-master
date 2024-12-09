@@ -1,5 +1,24 @@
 //'ws://your-websocket-server-url';
-const WEBSOCKET_URL = 'ws://localhost:3000';
+const WEBSOCKET_URL = 'ws:http://localhost:3000/';
+
+// Fetch the sensor data from the backend API
+//where the raw ugly data is 
+const fetchSensorData = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/api/data');
+        const data = await response.json();
+        
+        // Process and display the data
+        displaySensorData(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
+
+const displaySensorData = (data) => {
+    // Example: Displaying the fetched sensor data on the page (can be updated as needed)
+    console.log('Fetched Sensor Data:', data);
+};
 
 
 // Chart configuration for 24-hour monitoring
@@ -44,8 +63,27 @@ function createTemperatureChart(canvasId, label) {
 }
 
 // Initialize charts
-const outsideChart = createTemperatureChart('outside-chart', 'Outside Oven');
+const outsideChart = createTemperatureChart('outside-chart', 'Outside Meat');
 const insideChart = createTemperatureChart('inside-chart', 'Inside Meat');
+
+// Update charts with the data fetched from the API
+const updateChartsWithFetchedData = (data) => {
+    data.forEach(item => {
+        const timestamp = new Date(item.timestamp).getTime();
+        
+        // Update outside chart
+        outsideChart.data.labels.push(timestamp);
+        outsideChart.data.datasets[0].data.push(item.temperature); // Adjust field name as needed
+        
+        // Update inside chart
+        insideChart.data.labels.push(timestamp);
+        insideChart.data.datasets[0].data.push(item.temperature); // Adjust field name as needed
+    });
+
+    // Update chart after adding the data
+    outsideChart.update();
+    insideChart.update();
+};
 
 
 const socket = new WebSocket(WEBSOCKET_URL);
@@ -99,3 +137,6 @@ socket.onerror = (error) => {
 socket.onclose = () => {
     console.log('WebSocket connection closed');
 };
+
+// Call the fetch function to load initial data when the page loads
+fetchSensorData();

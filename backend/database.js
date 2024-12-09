@@ -18,7 +18,7 @@ const db = new sqlite3.Database(path.resolve(__dirname, 'iot_barbecue.db'), (err
     }
 });
 
-//add sensor temperature and other data into database
+//add sensor temperature and other data into database from microcontrollers
 const insertSensorData = (data) => {
     const { temperature, sensorLocation, timestamp } = data;
     return new Promise((resolve, reject) => {
