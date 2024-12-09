@@ -52,4 +52,4 @@ const fetchSensorData = () => {
     });
 };
 
-module.exports = { insertSensorData, fetchSensorData };
+module.exports = { db, insertSensorData, fetchSensorData };
