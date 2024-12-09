@@ -53,6 +53,23 @@ h1 {
     height: 300px;
 }
 
+
+#temperature-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#inside-temp-box, #outside-temp-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 45%;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+
+
 @media (max-width: 768px) {
     .sensor-grid {
         flex-direction: column;

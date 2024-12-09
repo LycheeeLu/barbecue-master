@@ -9,9 +9,8 @@ const http = require('http');
 const { fetchSensorData } = require('./database');
 
 const app = express();
+//random port different from app port 3000
 const wsServer = new WebSocket.Server({ port: 1866 });
-
-
 
 // Middleware for servin static files like index.html
 app.use(bodyParser.json());
@@ -19,8 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files (including CSS, JS) from the frontend directory
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
-
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
   });
@@ -42,7 +39,7 @@ console.log('WebSocket server running on port 1866');
 
 // Broadcast function to send updates to all WebSocket clients
 function broadcastUpdate(data) {
-    wss.clients.forEach((client) => {
+    wsServer.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(data));
         }

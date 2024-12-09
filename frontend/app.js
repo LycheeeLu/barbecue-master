@@ -13,8 +13,23 @@ const fetchSensorData = async () => {
 };
 
 const displaySensorData = (data) => {
+    data.forEach(item => {
+        const timestamp = item.timestamp;
+        const temperature = item.temperature;
+        const location = item.sensorLocation;
+
+        if (location === 'inside') {
+            document.getElementById('inside-temp').textContent = `${temperature}°C`;
+        } else if (location === 'outside') {
+            document.getElementById('outside-temp').textContent = `${temperature}°C`;
+        }
+
+        console.log(`Timestamp: ${timestamp}, ${location === 'inside' ? 'Inside Temp' : 'Outside Temp'}: ${temperature}°C`);
+    });
     // Example: Displaying the fetched sensor data on the page (can be updated as needed)
     console.log('Fetched Sensor Data:', data);
+    updateChartsWithFetchedData(data);
+    updateTempList(data);
 };
 
 
@@ -81,7 +96,17 @@ const updateChartsWithFetchedData = (data) => {
     // Update chart after adding the data
     outsideChart.update();
     insideChart.update();
+
+    // Create a new chart for temperature surveillance
+    const temperatureSurveillanceChart = createTemperatureChart('temperature-surveillance-chart', 'Temperature Surveillance');
+
+    // Update the new temperature surveillance chart as needed
+    temperatureSurveillanceChart.data.labels.push(timestamp);
+    temperatureSurveillanceChart.data.datasets[0].data.push(item.outsideTemp); // Adjust field name as needed
+    temperatureSurveillanceChart.data.datasets[1].data.push(item.insideTemp); // Adjust field name as needed
+    temperatureSurveillanceChart.update();
 };
+
 
 
 // WebSocket Connection to Port 1866
@@ -91,7 +116,6 @@ const socket = new WebSocket(WEBSOCKET_URL);
 socket.onopen = () => {
     console.log('WebSocket connection established');
 };
-
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);

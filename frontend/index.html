@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/0.1.2/chartjs-adapter-moment.min.js"></script>
 
+
 </head>
 <body>
     
@@ -28,10 +29,13 @@
                 <canvas id="inside-chart" class="temp-chart"></canvas>
             </div>
         </div>
-        <div class="history-chart">
-            <h2>Temperature History (Last 24 Hours)</h2>
-            <canvas id="history-chart" class="temp-chart"></canvas> 
-            <!-- New canvas for history graph -->
+        <div class="current-chart">
+            <h2>Temperature Surveillance (Current)</h2>
+
+            <div id="temperature-display">
+                <div id="outside-temp-box">Outside Temp: <span id="outside-temp">??</span>°C</div>
+                <div id="inside-temp-box">Inside Temp: <span id="inside-temp">??</span>°C</div>
+            </div>         
         </div>
     </div>
     <script src="app.js"></script>
