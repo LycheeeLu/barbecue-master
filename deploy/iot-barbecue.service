@@ -1,0 +1,13 @@
+[Unit]
+Description=IoT Barbecue System Backend
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/stinky/barbecue-system/backend/app.js
+Restart=always
+User=stinky
+Group=stinky
+Environment=PORT=3000 DB_PATH=/home/stinky/barbecue-system/backend/iot_barbecue.db
+
+[Install]
+WantedBy=multi-user.target
