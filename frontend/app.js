@@ -12,6 +12,7 @@ const fetchSensorData = async () => {
 };
 
 const displaySensorData = (data) => {
+
     data.forEach(item => {
         const timestamp = new Date(item.timestamp);
         const temperature = item.temperature;
@@ -91,6 +92,9 @@ const insideChart = createTemperatureChart('inside-chart', 'Inside Meat','rgb(25
 const updateChartsWithFetchedData = (data) => {
     const currentTime = new Date();
     const twentyFourHoursAgo = new Date(currentTime - 24 * 60 * 60 * 1000);
+     // Sort the data in descending order by timestamp
+    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
 
     data.forEach(item => {
         const timestamp = new Date(item.timestamp);
