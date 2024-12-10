@@ -27,12 +27,17 @@ const displaySensorData = (data) => {
         console.log(`Timestamp: ${timestamp}, ${location === 'inside' ? 'Inside Temp' : 'Outside Temp'}: ${temperature}°C`);
     });
     updateChartsWithFetchedData(data);
+    
+    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const latestOutsideData = data.find(item => item.sensorLocation === 'outside');
+    const latestInsideData = data.find(item => item.sensorLocation === 'inside');
+    updateTemperatureDisplay('outside', latestOutsideData.temperature);
+    updateTemperatureDisplay('inside', latestInsideData.temperature);
 
 };
 
 const updateTemperatureDisplay = (location, temperature) => {
     const tempValue = temperature != null ? temperature.toFixed(1) : '--';
-    
     document.getElementById(`${location}-temp`).textContent = `${tempValue}°C`;
     document.getElementById(`${location}-temp-box`).textContent = `${location.charAt(0).toUpperCase() + location.slice(1)} Temp: ${tempValue}°C`;
 };
@@ -92,10 +97,6 @@ const insideChart = createTemperatureChart('inside-chart', 'Inside Meat','rgb(25
 const updateChartsWithFetchedData = (data) => {
     const currentTime = new Date();
     const twentyFourHoursAgo = new Date(currentTime - 24 * 60 * 60 * 1000);
-     // Sort the data in descending order by timestamp
-    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-
     data.forEach(item => {
         const timestamp = new Date(item.timestamp);
         
@@ -117,9 +118,6 @@ const updateChartsWithFetchedData = (data) => {
 };
 
 
-
-
-// WebSocket Connection to Port 1866
 const WEBSOCKET_URL = 'ws://localhost:1866';
 const socket = new WebSocket(WEBSOCKET_URL);
 
@@ -129,8 +127,8 @@ socket.onopen = () => {
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    
-    
+
+
     updateTemperatureDisplay('outside', data.outsideTemp);
     updateTemperatureDisplay('inside', data.insideTemp);
     // Update charts
@@ -139,7 +137,7 @@ socket.onmessage = (event) => {
 
     // Keep only the last 24 hours of data
     const twentyFourHoursAgo = new Date(currentHour - 24 * 60 * 60 * 1000);
-    
+
     // Update outside chart data
     if (!outsideChart.data.labels.includes(currentHour)) {
         outsideChart.data.labels.push(currentHour);
@@ -175,6 +173,8 @@ socket.onerror = (error) => {
 socket.onclose = () => {
     console.log('WebSocket connection closed');
 };
+
+
 
 // Call the fetch function to load initial data when the page loads
 fetchSensorData();

@@ -11,7 +11,7 @@ PASSWORD = 'PASSWORD'
 SERVER_URL = 'http://localhost:3000/api/data'  
 
 # Initialize the DHT sensor
-sensor = dht.DHT22(machine.Pin(4))  # Adjust the pin number according to your setup
+sensor = dht.DHT22(machine.Pin(4))  # Adjust the pin number according to setup
 
 # Connect to Wi-Fi
 def connect_wifi():
@@ -59,11 +59,11 @@ def main():
             
             print(f"Temperature: {temperature}°C")
             
-            # Send data via HTTP POST
+
             send_data_to_http(temperature)
             
-            # Wait for 60 seconds before sending the next data
-            time.sleep(60)
+   
+            time.sleep(600)
         except Exception as e:
             print("Error reading sensor data:", e)
             time.sleep(10)
