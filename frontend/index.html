@@ -13,31 +13,35 @@
 
 </head>
 <body>
-    
-
     <div class="dashboard">
         <h1>Temperature Monitoring Dashboard</h1>
+        <div><p><i>Hover mouth above chart points to learn more</i></p></div>
+
         <div class="sensor-grid">
             <div class="sensor-card">
                 <h2>Outside Meat Temperature</h2>
                 <p id="outside-temp" class="temperature">--°C</p>
                 <canvas id="outside-chart" class="temp-chart"></canvas>
             </div>
+
             <div class="sensor-card">
                 <h2>Inside Meat Temperature</h2>
                 <p id="inside-temp" class="temperature">--°C</p>
                 <canvas id="inside-chart" class="temp-chart"></canvas>
             </div>
         </div>
-        <div class="current-chart">
-            <h2>Temperature Surveillance (Current)</h2>
 
+        <div class="current-chart">
+            <h2>Temperature Surveillance (Latest)</h2>
             <div id="temperature-display">
-                <div id="outside-temp-box">Outside Temp: <span id="outside-temp">??</span>°C</div>
-                <div id="inside-temp-box">Inside Temp: <span id="inside-temp">??</span>°C</div>
+                <div id="outside-temp-box">Outside Temp: --°C</div>
+                <div id="inside-temp-box">Inside Temp: --°C</div>
             </div>         
         </div>
+
+        <div>check out raw censor data <a href="/api/data" target="_blank">here</check></a></div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>

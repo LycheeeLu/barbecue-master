@@ -4,7 +4,6 @@ const fetchSensorData = async () => {
     try {
         const response = await fetch('http://localhost:3000/api/data');
         const data = await response.json();
-        
         // Process and display the data
         displaySensorData(data);
     } catch (error) {
@@ -14,98 +13,105 @@ const fetchSensorData = async () => {
 
 const displaySensorData = (data) => {
     data.forEach(item => {
-        const timestamp = item.timestamp;
+        const timestamp = new Date(item.timestamp);
         const temperature = item.temperature;
         const location = item.sensorLocation;
 
         if (location === 'inside') {
-            document.getElementById('inside-temp').textContent = `${temperature}°C`;
+            updateTemperatureDisplay('inside', temperature);
         } else if (location === 'outside') {
-            document.getElementById('outside-temp').textContent = `${temperature}°C`;
+            updateTemperatureDisplay('outside', temperature);
         }
 
         console.log(`Timestamp: ${timestamp}, ${location === 'inside' ? 'Inside Temp' : 'Outside Temp'}: ${temperature}°C`);
     });
-    // Example: Displaying the fetched sensor data on the page (can be updated as needed)
-    console.log('Fetched Sensor Data:', data);
     updateChartsWithFetchedData(data);
-    updateTempList(data);
+
 };
 
-
+const updateTemperatureDisplay = (location, temperature) => {
+    const tempValue = temperature != null ? temperature.toFixed(1) : '--';
+    
+    document.getElementById(`${location}-temp`).textContent = `${tempValue}°C`;
+    document.getElementById(`${location}-temp-box`).textContent = `${location.charAt(0).toUpperCase() + location.slice(1)} Temp: ${tempValue}°C`;
+};
 
 // Chart configuration for 24-hour monitoring
-function createTemperatureChart(canvasId, label) {
+function createTemperatureChart(canvasId, label, color) {
     const ctx = document.getElementById(canvasId).getContext('2d');
     return new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: label,
-                data: [],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'hour',
-                        displayFormats: {
-                            hour: 'HH:mm'
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Time'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    }
-                }
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: label,
+          data: [],
+          borderColor: color,
+          backgroundColor: color + '33',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'hour',
+              displayFormats: {
+                hour: 'HH:mm'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Time'
             }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Temperature (°C)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false // Hide the legend
+          }
         }
+      }
     });
-}
+  }
 
 // Initialize charts
-const outsideChart = createTemperatureChart('outside-chart', 'Outside Meat');
-const insideChart = createTemperatureChart('inside-chart', 'Inside Meat');
+const outsideChart = createTemperatureChart('outside-chart', 'Outside Meat','rgb(54, 162, 235)');
+const insideChart = createTemperatureChart('inside-chart', 'Inside Meat','rgb(255, 99, 132)');
 
 // Update charts with the data fetched from the API
 const updateChartsWithFetchedData = (data) => {
+    const currentTime = new Date();
+    const twentyFourHoursAgo = new Date(currentTime - 24 * 60 * 60 * 1000);
+
     data.forEach(item => {
-        const timestamp = new Date(item.timestamp).getTime();
+        const timestamp = new Date(item.timestamp);
         
-        // Update outside chart
-        outsideChart.data.labels.push(timestamp);
-        outsideChart.data.datasets[0].data.push(item.temperature); // Adjust field name as needed
-        
-        // Update inside chart
-        insideChart.data.labels.push(timestamp);
-        insideChart.data.datasets[0].data.push(item.temperature); // Adjust field name as needed
+        // Only add data points within the last 24 hours
+        if (timestamp >= twentyFourHoursAgo) {
+            if (item.sensorLocation === 'outside') {
+                outsideChart.data.labels.push(timestamp);
+                outsideChart.data.datasets[0].data.push(item.temperature);
+            } else if (item.sensorLocation === 'inside') {
+                insideChart.data.labels.push(timestamp);
+                insideChart.data.datasets[0].data.push(item.temperature);
+            }
+        }
     });
 
     // Update chart after adding the data
     outsideChart.update();
     insideChart.update();
-
-    // Create a new chart for temperature surveillance
-    const temperatureSurveillanceChart = createTemperatureChart('temperature-surveillance-chart', 'Temperature Surveillance');
-
-    // Update the new temperature surveillance chart as needed
-    temperatureSurveillanceChart.data.labels.push(timestamp);
-    temperatureSurveillanceChart.data.datasets[0].data.push(item.outsideTemp); // Adjust field name as needed
-    temperatureSurveillanceChart.data.datasets[1].data.push(item.insideTemp); // Adjust field name as needed
-    temperatureSurveillanceChart.update();
 };
+
 
 
 
@@ -120,10 +126,9 @@ socket.onopen = () => {
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     
-    // Update current temperature displays
-    document.getElementById('outside-temp').textContent = `${data.outsideTemp}°C`;
-    document.getElementById('inside-temp').textContent = `${data.insideTemp}°C`;
     
+    updateTemperatureDisplay('outside', data.outsideTemp);
+    updateTemperatureDisplay('inside', data.insideTemp);
     // Update charts
     const currentTime = new Date();
     const currentHour = currentTime.setMinutes(0, 0, 0); // Set to the start of the current hour
